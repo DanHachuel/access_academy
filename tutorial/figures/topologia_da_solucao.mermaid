@@ -1,0 +1,131 @@
+graph TD
+
+oss[RA/NEC]
+
+efika[Efika]
+
+geofibra[GeoFibra]
+
+tems[TEMS]
+
+netcool["NetCool <br> (Descontinuado)"]
+
+safira[Safira]
+
+atr[ATR] 
+
+ems[EMS - Gerencia RMS Radisys]
+
+HL1 --> HL2 --> HL3 --> hl4[HL4]
+
+subgraph tor[Physical TOR - Edgecore]
+tor_onie[ONIE]
+tor_bios[BIOS]
+
+ subgraph tor_onl[ONL]
+      tor_onl.main((.))
+      tor_cpld[CPLD]
+      tor_fpga[FPGA/SOC]
+	 
+	  
+	   	 subgraph nos[NOS - IP Infusion]
+      nos.main((.))
+	 		end
+	 end 
+end
+
+subgraph polt[Physical OLT - Radisys]
+
+olt_onie[ONIE]
+olt_bios[BIOS]
+
+    subgraph onl[ONL]
+      onl.main((.))
+      cpld[CPLD]
+      fpga[FPGA/SOC]
+      bal[BAL]
+
+
+      subgraph cbac[CBAC - Controller Radisys]
+        cbac.main((.))
+
+          subgraph cbac_infra[CBAC INFRA - Controller / OLT]
+                cbac_infra.main((.)) 
+    	    end
+
+          subgraph cbac_core[CBAC CORE - OLT]
+                  cbac_core.main((.))      
+          end
+
+        end
+
+          subgraph voltha[SD-PON <BR> VOLTHA - ONF]
+            voltha.main((.))
+
+            subgraph voltha_infra[VOLTHA INFRA]
+                voltha_infra.main((.))
+
+            end
+    
+            subgraph voltha_core[VOLTHA CORE]
+                voltha_core.main((.))
+
+            end
+
+          end
+
+
+    %%voltha.main --> voltha_infra.main --> voltha_core.main
+
+    end
+
+%%olt_bios --> olt_onie --> onl.main --> cbac.main --> cbac_infra.main --> cbac_core.main --> voltha.main --> 
+
+onl.main --> cbac.main --> cbac_infra.main --> cbac_core.main --> voltha.main --> voltha_infra.main --> voltha_core.main
+
+tor_onl.main -->  nos.main
+
+end
+
+ efika -.-> atr
+ geofibra -.-> atr
+ netcool ---|"Alarm<br>(T.B.D)"| tems 
+ tems ---|"PON: TMF841 (SOAP)<BR> TOR: TMF841 (SOAP) or TMF642 (REST) <BR>INFRA: (T.B.D)"| ems
+ 
+ safira ---|"Performance <br> TMF 628"| ems
+
+ oss -.-> atr 
+ atr -.-|"Provisioning <br> TMF 640"| ems 
+ ems -.-> onl.main
+ hl4 --- nos.main
+ nos.main --- onl.main
+ ems -.-> tor_onl.main
+ 
+ style ems fill:yellow
+ style netcool fill:yellow
+ style oss fill:yellow
+ style safira fill:yellow
+ 
+ style polt fill:silver
+    style onl fill:lightgreen
+	  style onl.main fill:lightgreen
+    style cbac fill:violet
+	  style cbac.main fill:violet
+    style cbac_infra fill:lightblue
+	  style cbac_infra.main fill:lightblue
+    style cbac_core.main fill:pink
+	  style cbac_core fill:pink
+    style voltha fill:gold
+	  style voltha_infra.main fill:lightyellow
+	  style voltha_core.main fill:lightyellow
+    style cpld fill:goldenrod
+    style fpga fill:goldenrod
+	
+	  style tor fill:silver
+    style tor_onl fill:lightgreen
+	  style tor_onl.main fill:lightgreen
+	  style nos fill:violet
+	  style nos.main fill:violet
+
+
+ 
